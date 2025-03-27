@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 /**
  * The Player class represents a player with a name and score.
  */
@@ -76,8 +78,10 @@ public class Player {
     /**
      * Implement override hash method **/
     @Override
-   public hashCode() {
-
+   public int hashCode() {
+        int hashCode;
+        hashCode =  Objects.hashCode(this.name);
+        return hashCode;
     }
 
 
