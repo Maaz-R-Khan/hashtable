@@ -42,12 +42,14 @@ public class List {
     }
 
 
-    /** Clone method that creates a clone of the list. **/
+    /** Clone method that creates a deep copy of the current instance. **/
     List createClone() {
         return new List(this);
     }
 
 
+    /**
+     * This method adds a player to the START of the list.**/
     void add(Player newPlayer) {
         Node newNode = new Node(new Player(newPlayer), head); // create a new node with a new player, and pointing to head.
         head = newNode; //the new player is now at head.
@@ -79,4 +81,7 @@ public class List {
         return size;
     }
 
+    public Node getHead() {
+        return head;
+    }
 }

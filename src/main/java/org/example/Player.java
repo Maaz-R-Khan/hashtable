@@ -76,7 +76,7 @@ public class Player {
     }
 
     /**
-     * Implement override hash method **/
+     * The hashCode method generates a hash value based only on the name **/
     @Override
    public int hashCode() {
         int hashCode;
