@@ -1,5 +1,9 @@
 package org.example;
 
+/**
+ * A hash table implementation using separate chaining (via List).
+ * Supports adding players, resizing on high load factor, deep copying, and searching by name.
+ */
 public class HashTable {
 
     private List[] hashTable; //Hash Table of size numBuckets
@@ -7,11 +11,21 @@ public class HashTable {
   private int size;
 
 
-   /** The hash function method calculates a bucket index. **/
+    /**
+     * Computes the index of the bucket for a given Player object.
+     * The index is determined using the hash code of the player's name,
+     * which ensures a consistent mapping based on the player's identity.
+     */
    private int getBucketIndex(Player p) {
        return Math.abs(p.hashCode()) % numBuckets;
    }
 
+    /**
+     * Computes the index of the bucket for a given player name.
+     * This method is used when searching for a player by name, and
+     * ensures that the hash function behaves consistently with the
+     * one used when adding a Player object.
+     */
     private int getBucketIndex(String name) {
         return Math.abs(name.hashCode()) % numBuckets;
     }
@@ -45,26 +59,32 @@ public class HashTable {
         int oldNumBuckets = this.numBuckets;
 
         int newNumBuckets = oldNumBuckets * 2;
-        this.hashTable = new List[newNumBuckets];
 
-        //Initialize each bucket in the new list.
-        for(int i = 0; i < newNumBuckets; i++) {
+       //Update numBuckets before recalculating hashes
+        this.numBuckets = newNumBuckets;
+
+        // Create a new hash table with double the number of buckets
+        this.hashTable = new List[newNumBuckets];
+        for (int i = 0; i < newNumBuckets; i++) {
             this.hashTable[i] = new List();
         }
 
+        // Reset size (it will be recalculated during rehashing)
         this.size = 0;
 
-       for(int i = 0; i < oldNumBuckets; i++) {
-           List bucket = oldHashTable[i];
-           if(bucket != null) {
-               Node current = bucket.getHead();
-               while (current != null) {
-                   this.add(current.getData()); // Re-add using the updated hash function
-                   current = current.getNext();
-               }
-           }
-       }
+        // Rehash all players from the old hash table into the new one
+        for (int i = 0; i < oldNumBuckets; i++) {
+            List bucket = oldHashTable[i];
+            if (bucket != null) {
+                Node current = bucket.getHead();
+                while (current != null) {
+                    this.add(current.getData()); // Re-add using updated hash index
+                    current = current.getNext();
+                }
+            }
+        }
     }
+
 
     /**
      * This method adds a player to the hash table**/
@@ -94,11 +114,20 @@ public class HashTable {
 
     /** The show method prints all the data in the hash table. **/
     void show() {
-        for(int i = 0; i < size; i++) {
-            System.out.println(hashTable[i] + " ");
+        for (int i = 0; i < numBuckets; i++) {
+            Node current = hashTable[i].getHead();
+            if (current != null) {
+                System.out.print("Bucket " + i + ": ");
+                while (current != null) {
+                    Player p = current.getData();
+                    System.out.print(p.getName() + " (" + p.getScore() + ") -> ");
+                    current = current.getNext();
+                }
+                System.out.println("null");
+            }
         }
-        System.out.println();
     }
+
 
 
 
